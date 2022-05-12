@@ -14,7 +14,7 @@ import { omit } from 'lodash';
 import { statusConfigCV } from '../../ultis/constConfig';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 
 const { Option } = Select;
 

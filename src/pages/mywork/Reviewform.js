@@ -8,15 +8,11 @@ import {
   updateReviewerListStudent,
   updateStatusListStudent,
 } from "../../features/reviewerStudent/reviewerSlice";
-import {
-  filterBranch,
-  filterStatusForm,
-  filterStatuss,
-} from "../../ultis/selectOption";
+import { filterBranch, filterStatusForm } from "../../ultis/selectOption";
 import { omit } from "lodash";
 import { statusConfigForm } from "../../ultis/constConfig";
 import TextArea from "antd/lib/input/TextArea";
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 const { Option } = Select;
 
 const Reviewform = () => {

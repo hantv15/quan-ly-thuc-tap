@@ -60,7 +60,7 @@ const Formrp = () => {
   const email = infoUser?.student?.email;
   const dispatch = useDispatch();
   const datePicker = (date, dateString) => {
-    setStartDate(date._d);
+    setStartDate(date);
   };
 
   useEffect(() => {
@@ -141,6 +141,7 @@ const Formrp = () => {
         typeNumber: time.typeNumber,
         internshipTime: startDate,
       };
+      console.log("startDate: ", startDate);
       console.log("newData: ", newData);
       await guardarArchivo(file, newData);
     } catch (error) {
@@ -152,8 +153,6 @@ const Formrp = () => {
   const isCheck =
     (student && student.statusCheck === 2) || student.statusCheck === 5;
   const nameCompany = student.nameCompany && student.support === 0;
-  console.log(nameCompany);
-
   return (
     <>
       {check && <CountDownCustorm time={time} />}

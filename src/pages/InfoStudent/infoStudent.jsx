@@ -48,7 +48,7 @@ const data = [
     address: "Hà Nội",
   },
 ]; // rowSelection object indicates the need for row selection
-function InfoStudent(props) {
+function InfoStudent() {
   const dispatch = useDispatch();
   const { student } = useSelector((state) => state.cumpus);
   const { infoUser } = useSelector((state) => state.auth);
@@ -57,7 +57,6 @@ function InfoStudent(props) {
   }, [infoUser]);
   const isRegister = student?.support;
   const statusForm = student?.statusCheck;
-  console.log(student, infoUser);
   return (
     <div>
       <Row>

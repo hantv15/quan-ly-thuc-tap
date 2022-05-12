@@ -129,6 +129,8 @@ const SupportStudent = () => {
         const resData = await RegisterInternAPI.upload(data);
         message.success(resData.data.message);
         form.resetFields();
+        setValue([]);
+        setSpin(false);
       } else {
         await guardarArchivo(file, data);
       }
@@ -169,12 +171,14 @@ const SupportStudent = () => {
           isCheck ? (
             <>
               <Spin spinning={spin}>
-                <Form.Item name="support" label="Kiểu đăng ký">
-                  <Radio.Group onChange={onChange} defaultValue={value}>
-                    <Radio value={1}>Nhà trường hỗ trợ</Radio>
-                    <Radio value={0}>Tự tìm nơi thực tập</Radio>
-                  </Radio.Group>
-                </Form.Item>
+                {student.statusCheck === 1 ? null : (
+                  <Form.Item name="support" label="Kiểu đăng ký">
+                    <Radio.Group onChange={onChange} defaultValue={value}>
+                      <Radio value={1}>Nhà trường hỗ trợ</Radio>
+                      <Radio value={0}>Tự tìm nơi thực tập</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                )}
                 <Form.Item
                   // name="user_code"
                   label="Mã sinh viên"
@@ -254,8 +258,8 @@ const SupportStudent = () => {
                 </Form.Item>
 
                 <Form.Item
-                  name="dream"
-                  label="Vị trí thực tập"
+                  name="internshipPosition"
+                  label={value === 1 ? "Vị trí mong mốn" : "Vị trí thực tập"}
                   rules={[
                     {
                       required: true,
@@ -265,7 +269,11 @@ const SupportStudent = () => {
                 >
                   <Input placeholder="VD: Web Back-end, Dựng phim, Thiết kế nội thất" />
                 </Form.Item>
-                {value === 1 ? <Support normFile={normFile} /> : <Proactive />}
+                {value === 1 ? (
+                  <Support normFile={normFile} />
+                ) : (
+                  <Proactive student={student} />
+                )}
                 <Form.Item {...tailFormItemLayout}>
                   <Button type="primary" htmlType="submit">
                     Đăng ký

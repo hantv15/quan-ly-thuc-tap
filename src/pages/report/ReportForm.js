@@ -63,7 +63,7 @@ const ReportForm = () => {
   const email = infoUser.student.email;
   const lForm = infoUser.student.form;
   const dispatch = useDispatch();
-  const datePicker = (date, dateString) => {
+  const datePicker = (date) => {
     setEndDate(date._d);
   };
   function guardarArchivo(files, data) {
@@ -159,10 +159,8 @@ const ReportForm = () => {
   const dateFormat = "YYYY-MM-DD";
   function disabledDate(current) {
     // Can not select days before today and today
-    return current && current < moment(student.internshipTime).add(1, "day");
+    return current && current < moment(student.internshipTime);
   }
-  console.log(moment(student.internshipTime).endOf("day"));
-  console.log(spin);
   return (
     <>
       {check && <CountDownCustorm time={time} />}
