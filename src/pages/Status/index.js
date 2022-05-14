@@ -17,7 +17,7 @@ export default function Status() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchStudent());
-  }, []);
+  }, [dispatch]);
   const columns = [
     {
       title: "Mã sinh viên",
@@ -76,7 +76,7 @@ export default function Status() {
       dataIndex: "status",
       width: 150,
       render: (val) =>
-        status.map((item, index) => {
+        status.map((item) => {
           if (val === item.value) {
             return (
               <span className={item.className} style={item.style}>

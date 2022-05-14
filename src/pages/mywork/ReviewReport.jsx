@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import "../../common/styles/status.css";
-import { Select, Input, Table, Button, message, Row, Col, Tag } from "antd";
+import { Select, Input, Table, Button, message, Row, Col } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import {
   listStudentReport,
@@ -45,7 +45,7 @@ const ReviewReport = () => {
       ...filter,
     };
     dispatch(listStudentReport(data));
-  }, [page, infoUser]);
+  }, [page, infoUser, filter, dispatch]);
 
   const columns = [
     {
@@ -198,15 +198,6 @@ const ReviewReport = () => {
       setChooseIdStudent(selectedRows);
     },
   };
-  const chooseStudent = useCallback(() => {
-    dispatch(
-      updateReviewerListStudent({
-        listIdStudent: listIdStudent,
-        email: infoUser?.manager?.email,
-      })
-    );
-    alert("Thêm thành công ");
-  }, [listIdStudent]);
 
   const handleStandardTableChange = (key, value) => {
     const newValue =
@@ -233,6 +224,7 @@ const ReviewReport = () => {
   const exportToCSV = (list) => {
     const newData = [];
 
+    // eslint-disable-next-line array-callback-return
     list.filter((item) => {
       const newObject = {};
       newObject["MSSV"] = item["mssv"];
@@ -558,8 +550,8 @@ const ReviewReport = () => {
                 <br />
                 <p className="list-detail">
                   Phân loại:
-                  {record.support == 1 && "Hỗ trợ"}
-                  {record.support == 0 && "Tự tìm"}
+                  {record.support === 1 && "Hỗ trợ"}
+                  {record.support === 0 && "Tự tìm"}
                   {record.support !== 1 && record.support !== 0 && ""}
                 </p>
                 <br />

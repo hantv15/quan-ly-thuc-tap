@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useEffect } from "react";
 import { Row, Col, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,7 +55,7 @@ function InfoStudent() {
   const { infoUser } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(getStudentId(infoUser.student.mssv));
-  }, [infoUser]);
+  }, [dispatch, infoUser]);
   const isRegister = student?.support;
   const statusForm = student?.statusCheck;
   return (
@@ -78,7 +79,7 @@ function InfoStudent() {
                 : ""}
             </p>
             <p>
-              Trạng thái SV :{" "}
+              Trạng thái SV :
               {optionStatus.map((index) => {
                 if (index.value === statusForm) {
                   return index.title

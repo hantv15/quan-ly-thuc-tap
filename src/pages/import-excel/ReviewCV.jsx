@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
 import '../../common/styles/status.css';
-import { Select, Input, Table, Button, message, Row, Col, Tag } from 'antd';
+import { Select, Input, Table, Button, message, Row, Col } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   getListStudentAssReviewer,
@@ -42,7 +42,7 @@ const ReviewCV = () => {
     };
     setChooseIdStudent([]);
     dispatch(getListStudentAssReviewer(data));
-  }, [page, infoUser]);
+  }, [page, infoUser, filter, dispatch]);
 
   const columns = [
     {
@@ -238,6 +238,7 @@ const ReviewCV = () => {
   const exportToCSV = (list) => {
     const newData = [];
 
+    // eslint-disable-next-line array-callback-return
     list.filter((item) => {
       const newObject = {};
       newObject['MSSV'] = item['mssv'];
@@ -250,6 +251,7 @@ const ReviewCV = () => {
       newObject['Trạng thái'] = item['statusCheck'];
       newData.push(newObject);
     });
+    // eslint-disable-next-line array-callback-return
     newData.filter((item) => {
       if (item['Trạng thái'] === 0) {
         item['Trạng thái'] = 0;
@@ -459,8 +461,8 @@ const ReviewCV = () => {
                 <br />
                 <p className="list-detail">
                   Phân loại:
-                  {record.support == 1 && 'Hỗ trợ'}
-                  {record.support == 0 && 'Tự tìm'}
+                  {record.support === 1 && 'Hỗ trợ'}
+                  {record.support === 0 && 'Tự tìm'}
                   {record.support !== 1 && record.support !== 0 && ''}
                 </p>
                 <br />

@@ -130,7 +130,7 @@ const ReportForm = () => {
   useEffect(() => {
     dispatch(getTimeForm(3));
     dispatch(getStudentId(infoUser.student.mssv));
-  }, [file]);
+  }, [dispatch, file, infoUser.student.mssv]);
 
   const onFinish = async (values) => {
     setSpin(true);

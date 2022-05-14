@@ -11,7 +11,7 @@ function EmployeeManager(props) {
   useEffect(() => {
     dispatch(fetchManager())
     dispatch(getListCumpus())
-  }, [])
+  }, [dispatch])
 
   const rowSelection = {
     onChange: (selectedRows) => {
@@ -54,19 +54,6 @@ function EmployeeManager(props) {
     {
       title: 'Trạng thái',
       dataIndex: 'status',
-      render: (status) => {
-        function ji() {
-          if (status === 0) {
-            return <span className='status-suscess' style={{ color: 'green' }}>Đang đi làm <br /></span>
-          } else if (status === 1) {
-            return <span className='status-failed' style={{ color: 'red' }}>Đã nghỉ việc<br /><button>Sửa</button></span>
-          } else if (status === 2) {
-            return <span className='status-check' style={{ color: 'rgb(255, 106, 0)' }}>Có việc bận <br/><button>Sửa</button></span>
-          } 
-        }
-       
-      }
-     
     }
   ];
   const handleChange = (key, value) => {

@@ -41,7 +41,7 @@ const Reviewform = () => {
       ...filter,
     };
     dispatch(listStudentForm(data));
-  }, [page, infoUser]);
+  }, [page, infoUser, filter, dispatch]);
 
   const columns = [
     {
@@ -493,8 +493,8 @@ const Reviewform = () => {
                 <br />
                 <p className="list-detail">
                   Phân loại:
-                  {record.support == 1 && "Hỗ trợ"}
-                  {record.support == 0 && "Tự tìm"}
+                  {record.support === 1 && "Hỗ trợ"}
+                  {record.support === 0 && "Tự tìm"}
                   {record.support !== 1 && record.support !== 0 && ""}
                 </p>
                 <br />

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { Button, Col, DatePicker, message, Radio, Row, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -44,25 +43,27 @@ const Formtimepicker = (props) => {
   };
   return (
     <div>
-    <h3>Đặt thời gian cho các form nhập của sinh viên</h3>
-      <Spin spinning={loading}/>
+      <h3>Đặt thời gian cho các form nhập của sinh viên</h3>
+      <Spin spinning={loading} />
       <Row>
         <Col xs={24} sm={16} md={16} lg={16} xl={12}>
           <Radio.Group onChange={onChange} value={value}>
-            {times?.length > 0 && times.map((item) => (
-              <Radio value={item.typeNumber} key={item._id}>{item.typeName}</Radio>
-            ))}
-            
+            {times?.length > 0 &&
+              times.map((item) => (
+                <Radio value={item.typeNumber} key={item._id}>
+                  {item.typeName}
+                </Radio>
+              ))}
           </Radio.Group>
         </Col>
         <Col xs={24} sm={8} md={8} lg={8} xl={12}>
-        <RangePicker
+          <RangePicker
             onChange={onSetDatePicker}
             renderExtraFooter={() => "extra footer"}
             showTime
-            style={{marginTop:10}}
+            style={{ marginTop: 10 }}
           />
-          <Button style={{marginTop:10}} onClick={onSaveTime} type="primary">
+          <Button style={{ marginTop: 10 }} onClick={onSaveTime} type="primary">
             Đặt thời gian
           </Button>
         </Col>
