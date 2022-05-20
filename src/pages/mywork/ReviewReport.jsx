@@ -378,7 +378,6 @@ const ReviewReport = () => {
       setTextNote(value);
     }, 300);
   };
-  console.log(list);
   return (
     <div className="status">
       {window.innerWidth < 1023 ? (

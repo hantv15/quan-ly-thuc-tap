@@ -15,7 +15,6 @@ const FSemester = ({ onFinish, editStatusButton, text, forms }) => {
   };
 
   const { listSemesters } = useSelector((state) => state.semester);
-  console.log(listSemesters);
 
   useEffect(() => {
     dispatch(getSemesters());
@@ -24,7 +23,6 @@ const FSemester = ({ onFinish, editStatusButton, text, forms }) => {
   const sethButton = (values) => {
     editStatusButton(values);
   };
-  console.log(forms);
   return (
     <>
       <Form form={forms} onFinish={onFinishForm}>
@@ -62,16 +60,16 @@ const FSemester = ({ onFinish, editStatusButton, text, forms }) => {
               ]}
             >
               <RangePicker
-                  disabledDate={(current) => {
-                    return (
-                      current &&
-                      new Date(current).getTime() <
-                        new Date(
-                          listSemesters[listSemesters.length - 1]?.end_time
-                        ).getTime()
-                    );
-                  }}
-                />
+                disabledDate={(current) => {
+                  return (
+                    current &&
+                    new Date(current).getTime() <
+                      new Date(
+                        listSemesters[listSemesters.length - 1]?.end_time
+                      ).getTime()
+                  );
+                }}
+              />
             </Form.Item>
           </Col>
           <Col>

@@ -140,7 +140,6 @@ const ReportForm = ({ infoUser, studentById }) => {
         attitudePoint: values.attitudePoint,
         resultScore: values.resultScore,
       };
-      console.log(newData);
       await guardarArchivo(file, newData);
     } catch (error) {
       const dataErr = await error.response.data;
@@ -161,8 +160,6 @@ const ReportForm = ({ infoUser, studentById }) => {
       current && current < moment(studentById.internshipTime).add(1, "day")
     );
   }
-  console.log("studentById:", studentById);
-  console.log("infoUser:", infoUser);
 
   return (
     <>

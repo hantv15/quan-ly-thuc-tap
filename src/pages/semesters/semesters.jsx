@@ -55,7 +55,6 @@ const FormSemester = () => {
   // sửa kỳ
   const getDataEdit = (value) => {
     setHideForm(true);
-    console.log(value);
     form.setFieldsValue({
       id: value.id,
       name: value.name,

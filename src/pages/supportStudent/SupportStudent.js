@@ -136,7 +136,6 @@ const SupportStudent = ({ studentById, infoUser }) => {
         typeNumber: supportForm,
         ///dispatch Redux
       };
-      console.log("data: ", data);
       if (value === 0) {
         const resData = await RegisterInternAPI.upload(data);
         message.success(resData.data.message);
@@ -154,93 +153,92 @@ const SupportStudent = ({ studentById, infoUser }) => {
   const onChange = (e) => {
     setValue(e.target.value);
   };
-
   const check = time.endTime > new Date().getTime();
   const isCheck =
     studentById?.statusCheck === 10 || studentById?.statusCheck === 1;
-  console.log("studentById?.statusCheck: ", studentById?.statusCheck);
   return (
     <>
-      <Spin spinning={spin}>
-        <Form
-          {...formItemLayout}
-          form={form}
-          className={styles.form}
-          name="register"
-          onFinish={onFinish}
-          initialValues={{
-            residence: ["zhejiang", "hangzhou", "xihu"],
-            prefix: "86",
-          }}
-          scrollToFirstError
-        >
-          {check ? (
-            <>{isCheck ? <CountDownCustorm time={time} /> : ""}</>
+      {isCheck === true ? (
+        <Spin spinning={spin}>
+          {check === true ? (
+            <CountDownCustorm time={time} />
           ) : (
             <p style={{ marginBottom: "16px" }}>
-              Thời gian đăng ký form chưa được mở, sinh viên vui lòng chờ thông
-              báo từ phòng QHDN
+              Thời gian đăng ký form bạn chọn chưa mở, vui lòng quay lại sau!
             </p>
           )}
-          {isCheck ? (
-            <>
+          <Form
+            {...formItemLayout}
+            form={form}
+            className={styles.form}
+            name="register"
+            onFinish={onFinish}
+            initialValues={{
+              residence: ["zhejiang", "hangzhou", "xihu"],
+              prefix: "86",
+            }}
+            scrollToFirstError
+          >
+            {studentById.numberOfTime >= 1 ? null : (
               <Form.Item name="support" label="Kiểu đăng ký">
                 <Radio.Group onChange={onChange} defaultValue={value}>
                   <Radio value={1}>Nhà trường hỗ trợ</Radio>
                   <Radio value={0}>Tự tìm nơi thực tập</Radio>
                 </Radio.Group>
               </Form.Item>
-              {check ? (
-                <>
-                  <Form.Item
-                    // name="user_code"
-                    label="Mã sinh viên"
-                  >
-                    <p className={styles.text_form_label}>
-                      {studentById.mssv.toUpperCase()}
-                    </p>
-                  </Form.Item>
+            )}
 
-                  <Form.Item label="Họ và Tên">
-                    <p className={styles.text_form_label}>{studentById.name}</p>
-                  </Form.Item>
-                  <Form.Item
-                    name="phone"
-                    label="Số điện thoại"
-                    rules={[
-                      {
-                        required: true,
-                        pattern: new RegExp("(84|0[3|5|7|8|9])+([0-9]{8})"),
-                        message: "Vui lòng nhập đúng số điện thoại",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Số điện thoại" />
-                  </Form.Item>
+            {check === true ? (
+              <>
+                <Form.Item
+                  // name="user_code"
+                  label="Mã sinh viên"
+                >
+                  <p className={styles.text_form_label}>
+                    {studentById?.mssv?.toUpperCase()}
+                  </p>
+                </Form.Item>
 
-                  <Form.Item
-                    name="address"
-                    label="Địa chỉ"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập địa chỉ",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Địa chỉ" />
-                  </Form.Item>
+                <Form.Item label="Họ và Tên">
+                  <p className={styles.text_form_label}>{studentById.name}</p>
+                </Form.Item>
+                <Form.Item
+                  name="phone"
+                  label="Số điện thoại"
+                  rules={[
+                    {
+                      required: true,
+                      pattern: new RegExp("(84|0[3|5|7|8|9])+([0-9]{8})"),
+                      message: "Vui lòng nhập đúng số điện thoại",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Số điện thoại" />
+                </Form.Item>
 
-                  <Form.Item
-                    name="majors"
-                    label="Ngành học"
-                    initialValue={studentById.majors}
-                  >
-                    <p className={styles.text_form_label}>
-                      {studentById.majors ? studentById.majors : "Chưa có"}
-                    </p>
-                  </Form.Item>
-                  {/* {value === 1 && (
+                <Form.Item
+                  name="address"
+                  label="Địa chỉ"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập địa chỉ",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Địa chỉ" />
+                </Form.Item>
+
+                <Form.Item
+                  name="majors"
+                  label="Ngành học"
+                  initialValue={studentById.majors}
+                >
+                  <p className={styles.text_form_label}>
+                    {studentById.majors ? studentById.majors : "Chưa có"}
+                  </p>
+                </Form.Item>
+                {/* {value === 1 && (
                     <Form.Item
                       name="business"
                       label="Đơn vị thực tập"
@@ -267,40 +265,33 @@ const SupportStudent = ({ studentById, infoUser }) => {
                       </Select>
                     </Form.Item>
                   )} */}
-                  <Form.Item
-                    name="dream"
-                    label="Vị trí thực tập"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập địa chỉ",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="VD: Web Back-end, Dựng phim, Thiết kế nội thất" />
-                  </Form.Item>
-                  {value === 1 ? (
-                    <Support normFile={normFile} />
-                  ) : (
-                    <Proactive />
-                  )}
-                  <Form.Item {...tailFormItemLayout}>
-                    <Button type="primary" htmlType="submit">
-                      {studentById?.statusCheck === 1
-                        ? "Sửa thông tin"
-                        : "Đăng ký"}
-                    </Button>
-                  </Form.Item>
-                </>
-              ) : (
-                ""
-              )}
-            </>
-          ) : (
-            "Đăng ký thông tin thành công"
-          )}
-        </Form>
-      </Spin>
+                <Form.Item
+                  name="dream"
+                  label="Vị trí thực tập"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập địa chỉ",
+                    },
+                  ]}
+                >
+                  <Input placeholder="VD: Web Back-end, Dựng phim, Thiết kế nội thất" />
+                </Form.Item>
+                {value === 1 ? <Support normFile={normFile} /> : <Proactive />}
+                <Form.Item {...tailFormItemLayout}>
+                  <Button type="primary" htmlType="submit">
+                    {studentById?.statusCheck === 1
+                      ? "Sửa thông tin"
+                      : "Đăng ký"}
+                  </Button>
+                </Form.Item>
+              </>
+            ) : null}
+          </Form>
+        </Spin>
+      ) : (
+        "Nộp thông tin đăng ký thực tập thành công."
+      )}
     </>
   );
 };

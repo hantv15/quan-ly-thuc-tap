@@ -88,7 +88,6 @@ const Formrp = ({ infoUser, studentById }) => {
         .then((res) => res.json())
         .then((a) => {
           const newData = { ...data, form: a.url };
-          console.log("data_url: ", newData);
           ReportFormAPI.uploadForm(newData)
             .then((res) => {
               message.success(res.data.message);
@@ -141,7 +140,6 @@ const Formrp = ({ infoUser, studentById }) => {
         typeNumber: time.typeNumber,
         internshipTime: startDate,
       };
-      console.log("newData: ", newData);
       await guardarArchivo(file, newData);
     } catch (error) {
       const dataErr = await error.response.data;
