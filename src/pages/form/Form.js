@@ -67,6 +67,7 @@ const Formrp = ({ infoUser, studentById }) => {
     dispatch(getStudentId(infoUser.student.mssv));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
+
   function guardarArchivo(files, data) {
     const file = files; //the file
     const urlGGDriveCV = `https://script.google.com/macros/s/AKfycbzu7yBh9NkX-lnct-mKixNyqtC1c8Las9tGixv42i9o_sMYfCvbTqGhC5Ps8NowC12N/exec
@@ -152,7 +153,8 @@ const Formrp = ({ infoUser, studentById }) => {
     studentById.statusCheck === 5;
   const nameCompany =
     studentById.support === 0 ? studentById.nameCompany : studentById.business;
-
+  console.log("infoUser: ", infoUser);
+  console.log("studentById: ", studentById);
   return (
     <>
       {check ? (

@@ -62,7 +62,7 @@ const Status = () => {
         );
       }
     });
-    
+
     dispatch(getSmester());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, infoUser]);
