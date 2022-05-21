@@ -4,7 +4,7 @@ import Column from "antd/lib/table/Column";
 import * as FileSaver from "file-saver";
 import { omit } from "lodash";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import "../../common/styles/status.css";
@@ -17,9 +17,15 @@ import { filterBranch, filterStatuss } from "../../ultis/selectOption";
 import UpFile from "../../components/ExcelDocument/UpFile";
 import StudentDetail from "../../components/studentDetail/StudentDetail";
 import SemestersAPI from "../../API/SemestersAPI";
+import { object } from "prop-types";
 const { Option } = Select;
 
-const Status = () => {
+const Status = ({
+  listStudent: {list, total},
+  infoUser,
+  loading,
+  listSmester
+}) => {
   const [studentdetail, setStudentDetail] = useState("");
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -28,12 +34,6 @@ const Status = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  const { infoUser } = useSelector((state) => state.auth);
-  const {
-    listStudent: { list, total },
-    loading,
-    listSmester,
-  } = useSelector((state) => state.students);
   const [chooseIdStudent, setChooseIdStudent] = useState([]);
   const [listIdStudent, setListIdStudent] = useState([]);
   const [defaultSmester, setDefaultSmester] = useState({});
@@ -639,4 +639,16 @@ const Status = () => {
   );
 };
 
-export default Status;
+Status.propTypes ={
+  listStudent: object,
+  infoUser:object
+}
+
+export default connect(({
+  students, auth
+}) => ({
+  listStudent: students.listStudent,
+  infoUser: auth.infoUser,
+  listSmester: students.listSmester,
+  loading: students.loading
+}))(Status);
