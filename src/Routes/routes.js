@@ -19,7 +19,7 @@ import ReviewReport from "../pages/mywork/ReviewReport";
 import ListOfBusiness from "../pages/business/ListOfBusiness";
 import FormSemester from "../pages/semesters/semesters";
 import Major from "../pages/major/major";
-// import Company from "../pages/company/company";
+import Narrow from "../pages/narrow/narrow";
 const Router = () => {
   return (
     <Routes>
@@ -112,6 +112,16 @@ const Router = () => {
           }
         /> */}
         <Route
+          path="narrow"
+          element={
+            <Privateroute>
+              <Privateadmin>
+                <Narrow />
+              </Privateadmin>
+            </Privateroute>
+          }
+        />
+        <Route
           path="form-register"
           element={
             <Privateroute>
@@ -171,6 +181,7 @@ const Router = () => {
             </Privateroute>
           }
         />
+
         <Route path="/404" element={<Notfound />} />
       </Route>
     </Routes>

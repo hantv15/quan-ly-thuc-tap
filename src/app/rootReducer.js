@@ -10,6 +10,7 @@ import timeDateSlice from "../features/timeDateSlice/timeDateSlice";
 import semestersSlice from "../features/semesters/semestersSlice";
 import businessSlice from "../features/businessSlice/businessSlice";
 import majorSlice from "../features/majorSlice/majorSlice";
+import narrowSlice from "../features/narrowSlice/narrowSlice";
 
 const rootReducer = combineReducers({
   students: studentSlice,
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   time: timeDateSlice,
   semester: semestersSlice,
   business: businessSlice,
-  major:majorSlice,
+  major: majorSlice,
+  narrow: narrowSlice,
 });
 export default rootReducer;
