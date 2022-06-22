@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import LayoutWebsite from "../layouts/layoutWebsite";
 import Login from "../pages/login/Login";
 import SupportStudent from "../pages/supportStudent/SupportStudent";
@@ -22,11 +22,14 @@ import Major from "../pages/major/major";
 import PrivateStudent from "./private/privateStudent";
 import CampusManager from "../pages/campus/Campus";
 import PrivateSupperAdmin from "./private/privateSupperAdmin";
+import Narrows from "../pages/major/narrows";
+import { getLocal } from "../ultis/storage";
 // import Company from "../pages/company/company";
 const Router = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+
       <Route
         path="/"
         element={
@@ -35,6 +38,12 @@ const Router = () => {
           </Privateroute>
         }
       >
+        <Route
+          index
+          element={
+            <Navigate to={getLocal().isAdmin ? "/status" : "/info-Student"} />
+          }
+        />
         <Route
           path="/support-student"
           element={
@@ -72,6 +81,14 @@ const Router = () => {
           element={
             <Privateadmin>
               <Status />
+            </Privateadmin>
+          }
+        />
+        <Route
+          path="narrows"
+          element={
+            <Privateadmin>
+              <Narrows />
             </Privateadmin>
           }
         />
