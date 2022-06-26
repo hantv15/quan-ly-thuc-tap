@@ -44,6 +44,10 @@ const StudentAPI = {
     const url = `/student/status`;
     return axiosClient.patch(url, data);
   },
+  updateStudent(data) {
+    const url = `/student/${data._id}`;
+    return axiosClient.put(url, data);
+  },
   listStudentAssReviewer(data) {
     const url = `/review?${stringify(data)}`;
     return axiosClient.get(url);

@@ -11,7 +11,7 @@ import semestersSlice from "../features/semesters/semestersSlice";
 import businessSlice from "../features/businessSlice/businessSlice";
 import majorSlice from "../features/majorSlice/majorSlice";
 import narrow from "../features/narrow";
-
+import global from "../features/global";
 const rootReducer = combineReducers({
   students: studentSlice,
   users: userSlice,
@@ -24,6 +24,7 @@ const rootReducer = combineReducers({
   semester: semestersSlice,
   business: businessSlice,
   major:majorSlice,
-  narrow: narrow
+  narrow: narrow,
+  global: global
 });
 export default rootReducer;

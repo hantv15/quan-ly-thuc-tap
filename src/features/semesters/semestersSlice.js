@@ -13,8 +13,18 @@ export const insertSemester = createAsyncThunk(
   "semesters/insertSemester",
   async (action) => {
     const { data } = await SemestersAPI.insertSemester(action);
+    return data
   }
 );
+
+export const updateSemester = createAsyncThunk(
+  "semesters/updateSemester",
+  async action => {
+  const {data} = await SemestersAPI.updateSemester(action)
+    return data
+  }
+)
+
 
 const semesterSlice = createSlice({
   name: "semesters",
@@ -22,6 +32,7 @@ const semesterSlice = createSlice({
     listSemesters: [],
     defaultSemester: {},
     loading: false,
+    mesg: ""
   },
 
   extraReducers: (builder) => {
@@ -34,17 +45,34 @@ const semesterSlice = createSlice({
       state.listSemesters = action.payload.listSemesters;
     });
     builder.addCase(getSemesters.rejected, (state) => {
-      state.messages = "Get Semesters fail!";
+      state.mesg =  "Thất bại";
     });
     builder.addCase(insertSemester.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(insertSemester.fulfilled, (state, action) => {
+    builder.addCase(insertSemester.fulfilled, (state, {payload}) => {
       state.loading = false;
-      state.listSemesters = action.payload;
+      state.listSemesters = [payload,...state.listSemesters];
+      state.mesg="Thành công"
     });
     builder.addCase(insertSemester.rejected, (state) => {
-      state.messages = "Get Semesters fail!";
+      state.mesg = "Thất bại";
+    });
+
+
+    builder.addCase(updateSemester.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateSemester.fulfilled, (state, {payload}) => {
+      let data = state.listSemesters.filter(
+        (item) => item._id !== payload._id
+      );
+      state.listSemesters = [payload,...data, ];
+      state.mesg ="Thành công";
+      state.loading = false;
+    });
+    builder.addCase(updateSemester.rejected, (state) => {
+      state.mesg = "Thất bại";
     });
   },
 });

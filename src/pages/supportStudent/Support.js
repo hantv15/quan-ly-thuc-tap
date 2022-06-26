@@ -1,6 +1,7 @@
 import React from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Form, Button, Upload } from "antd";
+
 const Support = ({ normFile }) => {
   const getFile = (e) => {
     normFile(e);

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
-import '../../common/styles/status.css';
-import { Select, Input, Table, Button, message, Row, Col} from 'antd';
-import { useSelector, useDispatch } from 'react-redux';
+import styles from './review.module.css';
+import { Select, Input, Table, Button, message, Row, Col } from 'antd';
+import { useSelector, useDispatch, connect } from 'react-redux';
 import {
   getListStudentAssReviewer,
   updateReviewerListStudent,
@@ -20,10 +20,10 @@ const { Column } = Table;
 
 const { Option } = Select;
 
-const ReviewCV = () => {
+const ReviewCV = ({ isMobile }) => {
   const dispatch = useDispatch();
   const [studentdetail, setStudentDetail] = useState('');
-  const infoUser = getLocal()
+  const infoUser = getLocal();
   const {
     listStudentAssReviewer: { total, list },
     loading,
@@ -49,12 +49,12 @@ const ReviewCV = () => {
     };
     setChooseIdStudent([]);
     dispatch(getListStudentAssReviewer(data));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const onShowDetail = (mssv, key) => {
-    onShowModal()
-    setStudentDetail(key._id)
+    onShowModal();
+    setStudentDetail(key._id);
   };
 
   const columns = [
@@ -63,7 +63,7 @@ const ReviewCV = () => {
       dataIndex: 'mssv',
       width: 100,
       fixed: 'left',
-      color: 'blue'
+      color: 'blue',
     },
     {
       title: 'Họ và Tên',
@@ -118,9 +118,9 @@ const ReviewCV = () => {
       width: 230,
     },
     {
-      title: "Ghi chú",
+      title: 'Ghi chú',
       dataIndex: 'note',
-      width: 150
+      width: 150,
     },
     {
       title: 'Trạng thái',
@@ -252,7 +252,7 @@ const ReviewCV = () => {
   const exportToCSV = (list) => {
     const newData = [];
 
-    list.filter(item => {
+    list.filter((item) => {
       const newObject = {};
       newObject['MSSV'] = item['mssv'];
       newObject['Họ tên'] = item['name'];
@@ -262,7 +262,7 @@ const ReviewCV = () => {
       newObject['Số lần hỗ trợ'] = item['numberOfTime'];
       newObject['CV'] = item['CV'];
       newObject['Trạng thái'] = item['statusCheck'];
-    return  newData.push(newObject);
+      return newData.push(newObject);
     });
     // eslint-disable-next-line array-callback-return
     newData.filter((item) => {
@@ -286,12 +286,135 @@ const ReviewCV = () => {
   };
 
   return (
-    <div className="status">
-      {window.innerWidth < 1023 ? (
-        <h4 style={{ fontSize: '1rem' }}>Review CV</h4>
+    <div className={styles.status}>
+      <div className={styles.header_flex}>
+        <h1>Review CV</h1>
+      </div>
+
+      {isMobile ? (
+        <>
+          <div className={styles.status}>
+            <Row>
+              <Col span={12}>
+                <div className="search">
+                  <Select
+                    style={{ width: '95%' }}
+                    onChange={(val) => handleStandardTableChange('majors', val)}
+                    placeholder="Lọc theo ngành"
+                  >
+                    {filterBranch.map((item, index) => (
+                      <>
+                        <Option value={item.value} key={index}>
+                          {item.title}
+                        </Option>
+                      </>
+                    ))}
+                  </Select>
+                </div>
+              </Col>
+              <Col span={12}>
+                <div className="search">
+                  <Select
+                    className="filter-status"
+                    style={{ width: '100%'}}
+                    onChange={(val) => handleStandardTableChange('statusCheck', val)}
+                    placeholder="Lọc theo trạng thái"
+                  >
+                    {filterStatusCV.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.title}
+                      </Option>
+                    ))}
+                  </Select>
+                </div>
+              </Col>
+            </Row>
+            <div className="search">
+              <Input
+                style={{ width: '100%', marginTop: 20}}
+                placeholder="Tìm kiếm theo mã sinh viên"
+                onChange={(val) => handleStandardTableChange('mssv', val.target.value)}
+              />
+            </div>
+            <Row
+              style={{
+                marginTop: 20,
+              }}
+            >
+              <Col span={12}>
+                <Button
+                type='primary'
+                  variant="warning"
+                  style={{ width: "95%" }}
+                  onClick={(e) => exportToCSV(list)}
+                >
+                  Export
+                </Button>
+              </Col>
+              <Col span={12}>
+
+              <div>
+              <Button
+                type='primary'
+                style={{ width: "100%"}}
+                onClick={handleSearch}
+              >
+                Tìm kiếm
+              </Button>
+          
+            </div>
+              </Col>
+            </Row>
+            {chooseIdStudent.length > 0 && (
+                <div className="comfirm">
+                  <Select
+                    className="comfirm-click"
+                    style={{ width: '100%', marginTop: '10px' }}
+                    onChange={actionOnchange}
+                    placeholder="Chọn"
+                  >
+                    <Option value="assgin" key="1">
+                      Kéo việc
+                    </Option>
+                    <Option value="edit" key="2">
+                      Cập nhật trạng thái
+                    </Option>
+                  </Select>
+
+                  {Object.keys(status).length >= 1 && (
+                    <Select
+                      className="upload-status"
+                      style={{ width: '100%', margin: '10px 0' }}
+                      onChange={(e) => selectStatus(e)}
+                      placeholder="Chọn trạng thái"
+                    >
+                      {statusConfigCV.map((item, index) => (
+                        <Option value={item.value} key={index}>
+                          {item.title}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
+                  {note === 1 && (
+                    <TextArea
+                      // value={value}
+                      onChange={handleNote}
+                      placeholder="Ghi chú..."
+                      style={{ marginRight: 10 }}
+                      autoSize={{ minRows: 3, maxRows: 5 }}
+                    />
+                  )}
+                  {Object.keys(status).length > 0 && (
+                    <Button style={{ marginRight: 10 }} onClick={() => comfirm()}>
+                      Xác nhận
+                    </Button>
+                  )}
+                </div>
+              )}
+          </div>
+        </>
       ) : (
         <>
-          <h4>Review CV</h4>
           <Button
             variant="warning"
             style={{ marginRight: 10, height: 36 }}
@@ -299,14 +422,13 @@ const ReviewCV = () => {
           >
             Export
           </Button>
-        </>
-      )}
-
-      <div className="filter" style={{ marginTop: '20px' }}>
+          <div className="filter" style={{ marginTop: '20px' }}>
         <Row>
-          <Col xs={24} sm={4} md={12} lg={8} xl={8} style={{ padding: '0 10px' }}>
-            <div className="search">
-              <span style={{ width: '40%' }}>Ngành: </span>
+          <Col xs={24} sm={4} md={12} lg={8} xl={8}>
+            <div  style={{
+                  display: "flex"
+                }}  className="search">
+              <span style={{ width: '70%', marginRight: '25px' }}>Ngành: </span>
               <Select
                 style={{ width: '100%', position: 'relative', right: '70px' }}
                 onChange={(val) => handleStandardTableChange('majors', val)}
@@ -324,9 +446,11 @@ const ReviewCV = () => {
           </Col>
           <br />
           <br />
-          <Col xs={24} sm={4} md={12} lg={8} xl={8} style={{ padding: '0 10px' }}>
-            <div className="search">
-              <span style={{ width: '40%' }}>Trạng thái:</span>
+          <Col xs={24} sm={4} md={12} lg={8} xl={8}>
+            <div style={{
+                  display: "flex"
+                }}  className="search">
+              <span style={{ width: '65%' }}>Trạng thái:</span>
               <Select
                 className="filter-status"
                 style={{ width: '100%', position: 'relative', right: '46px' }}
@@ -343,11 +467,13 @@ const ReviewCV = () => {
           </Col>
           <br />
           <br />
-          <Col xs={24} sm={4} md={12} lg={8} xl={8} style={{ padding: '0 10px' }}>
-            <div className="search">
-              <span style={{ width: '40%' }}>Tìm Kiếm: </span>
+          <Col xs={24} sm={4} md={12} lg={8} xl={8}>
+            <div style={{
+                  display: "flex"
+                }}  className="search">
+              <span style={{ width: '70%' }}>Tìm Kiếm: </span>
               <Input
-                style={{ width: '100%',  position: 'relative', right: '50px' }}
+                style={{ width: '100%', position: 'relative', right: '50px' }}
                 placeholder="Tìm kiếm theo mã sinh viên"
                 onChange={(val) => handleStandardTableChange('mssv', val.target.value)}
               />
@@ -399,12 +525,14 @@ const ReviewCV = () => {
                       // value={value}
                       onChange={handleNote}
                       placeholder="Ghi chú..."
-                      style={{marginRight: 10}}
+                      style={{ marginRight: 10 }}
                       autoSize={{ minRows: 3, maxRows: 5 }}
                     />
                   )}
                   {Object.keys(status).length > 0 && (
-                    <Button style={{marginRight: 10}} onClick={() => comfirm()}>Xác nhận</Button>
+                    <Button style={{ marginRight: 10 }} onClick={() => comfirm()}>
+                      Xác nhận
+                    </Button>
                   )}
                 </div>
               )}
@@ -412,6 +540,10 @@ const ReviewCV = () => {
           </Col>
         </Row>
       </div>
+        </>
+      )}
+
+ 
       {window.innerWidth > 1024 ? (
         <Table
           rowSelection={{
@@ -579,11 +711,10 @@ const ReviewCV = () => {
         </Table>
       )}
 
-      {isModalVisible && (
-        <StudentDetail studentId={studentdetail} onShowModal={onShowModal} />
-      )}
+      {isModalVisible && <StudentDetail studentId={studentdetail} onShowModal={onShowModal} />}
     </div>
   );
 };
-
-export default ReviewCV;
+export default connect(({ global }) => ({
+  isMobile: global.isMobile,
+}))(ReviewCV);

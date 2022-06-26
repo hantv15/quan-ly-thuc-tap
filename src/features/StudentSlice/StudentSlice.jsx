@@ -1,35 +1,47 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import StudentAPI from '../../API/StudentAPI';
-export const getStudent = createAsyncThunk('student/getStudent', async (page) => {
-  const { data } = await StudentAPI.getAll(page);
-  return data
-});
-export const insertStudent = createAsyncThunk('student/insertStudent', async (action) => {
-  const { data } = await StudentAPI.add(action);
-  return data;
-});
-export const getSmester = createAsyncThunk('student/getSmester', async (action) => {
-  const { data } = await StudentAPI.getSmesterSchool(action);
-  return data;
-});
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import StudentAPI from "../../API/StudentAPI";
+export const getStudent = createAsyncThunk(
+  "student/getStudent",
+  async (page) => {
+    if (page.smester_id.length === 0) {
+      delete page['smester_id'];
+      const { data } = await StudentAPI.getAll(page);
+      return data;
+    } else {
+      const { data } = await StudentAPI.getAll(page);
+      return data;
+    }
+  }
+);
+export const insertStudent = createAsyncThunk(
+  "student/insertStudent",
+  async (action) => {
+    const { data } = await StudentAPI.add(action);
+    return data;
+  }
+);
+export const getSmester = createAsyncThunk(
+  "student/getSmester",
+  async (action) => {
+    const { data } = await StudentAPI.getSmesterSchool(action);
+    return data;
+  }
+);
 
-
-export const getStudentId = createAsyncThunk(
-  "student/getById",
-   async (id) => {
+export const getStudentId = createAsyncThunk("student/getById", async (id) => {
   const { data } = await StudentAPI.get(id);
   return data;
 });
 
 const studentSlice = createSlice({
-  name: 'student',
+  name: "student",
   initialState: {
     listStudent: {},
     loading: false,
     listSmester: [],
-    defaultSemester:{},
-    studentById:{},
-    error: ''
+    defaultSemester: {},
+    studentById: {},
+    error: "",
   },
   reducers: {
     addStudent(state, action) {
@@ -37,15 +49,15 @@ const studentSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getStudent.fulfilled, (state, {payload}) => {
+    builder.addCase(getStudent.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.listStudent = payload
+      state.listStudent = payload;
     });
     builder.addCase(getStudent.pending, (state, action) => {
       state.loading = true;
     });
     builder.addCase(getStudent.rejected, (state, action) => {
-      state.error = 'Không thể truy vấn';
+      state.error = "Không thể truy vấn";
     });
     builder.addCase(insertStudent.fulfilled, (state, action) => {
       state.loading = false;
@@ -55,20 +67,20 @@ const studentSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(insertStudent.rejected, (state, action) => {
-      state.error = 'Không đúng định dạng';
+      state.error = "Không đúng định dạng";
     });
     //smester
     builder.addCase(getSmester.pending, (state, action) => {
       state.loading = true;
     });
-    builder.addCase(getSmester.fulfilled, (state, {payload}) => {
+    builder.addCase(getSmester.fulfilled, (state, { payload }) => {
       state.loading = false;
       state.listSmester = payload.listSemesters;
-      state.defaultSemester = payload.defaultSemester
+      state.defaultSemester = payload.defaultSemester;
     });
     builder.addCase(getSmester.rejected, (state, action) => {
       state.loading = false;
-      state.error = 'Thất bại';
+      state.error = "Thất bại";
     });
     //studentByID
 
@@ -82,7 +94,6 @@ const studentSlice = createSlice({
     builder.addCase(getStudentId.rejected, (state) => {
       state.messages = "Get student fail";
     });
-
   },
 });
 export const { uploadStudent } = studentSlice.actions;

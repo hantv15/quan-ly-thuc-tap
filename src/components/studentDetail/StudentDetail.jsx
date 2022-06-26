@@ -1,9 +1,20 @@
 import { EditOutlined } from "@ant-design/icons";
-import { Button, Col, Input, message, Modal, Row, Select, Spin } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Input,
+  message,
+  Modal,
+  Row,
+  Select,
+  Spin,
+} from "antd";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import StudentAPI from "../../API/StudentAPI";
-
+import { getListTime } from "../../features/timeDateSlice/timeDateSlice";
+import moment from "moment";
 import {
   statusConfigCV,
   statusConfigForm,
@@ -13,6 +24,8 @@ import "./studentDetail.css";
 const optionCheck = [1, 5, 8, 3];
 const { Option } = Select;
 const { TextArea } = Input;
+const { RangePicker } = DatePicker;
+const dateFormat = "DD/MM/YYYY hh:mm:ss";
 const StudentDetail = (props) => {
   const {
     onShowModal,
@@ -22,6 +35,9 @@ const StudentDetail = (props) => {
     listBusiness,
     infoUser,
   } = props;
+  const {
+    formTime: { times },
+  } = useSelector((state) => state.time);
   const [student, setStudent] = useState({});
   const [isShowSelectStatus, setIsShowSelectStatus] = useState(false);
   const [isEditReviewer, setIsEditReviewer] = useState(false);
@@ -34,8 +50,12 @@ const StudentDetail = (props) => {
   const [noteDetail, setNoteDetail] = useState("");
   const [listOption, setListOption] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [timeStudent, setTimeStudent] = useState({});
+  const [date, setDate] = useState(null);
   const dispatch = useDispatch();
-
+  const onSetDatePicker = (date) => {
+    setDate(date);
+  };
   const getDataStudent = useCallback(async () => {
     setIsLoading(true);
     const { data } = await StudentAPI.getStudentById(studentId);
@@ -48,7 +68,18 @@ const StudentDetail = (props) => {
 
   useEffect(() => {
     getDataStudent();
+    dispatch(getListTime());
   }, [dispatch, getDataStudent, studentId]);
+
+  const renderTime = (time) => {
+    return moment(new Date(time), "MM-DD-YYYY HH:mm", true).format(
+      "DD-MM-YYYY HH:mm"
+    );
+  };
+
+  const onSetIsUpdateStudentTime = (time) => {
+    setTimeStudent(time);
+  };
 
   const renderStatus = (status) => {
     if (status === 0) {
@@ -121,6 +152,39 @@ const StudentDetail = (props) => {
     }
   };
 
+  const onSaveTimeStudent = async () => {
+    if (date && date.length > 0) {
+      const startTime = date[0]._d.getTime();
+      const endTime = date[1]._d.getTime();
+      const timeObject = {
+        typeNumber: Number(timeStudent.typeNumber),
+        startTime: startTime,
+        endTime: endTime,
+        typeName: timeStudent.typeName,
+      };
+      if (student.listTimeForm && student.listTimeForm.length > 0) {
+        const timeCheck = student.listTimeForm.find((item) => item.typeNumber === timeStudent.typeNumber)
+        if(timeCheck){
+          timeCheck.startTime = startTime
+          timeCheck.endTime = endTime
+        }{
+          student.listTimeForm.push(timeObject);
+        }
+      } else {
+        student.listTimeForm.push(timeObject);
+      }
+      setTimeStudent(null)
+      setIsLoading(true);
+      const { data } = await StudentAPI.updateStudent(student);
+      if (data) {
+        setStudent(data);
+        message.success("Thay đổi thời gian form thành công");
+        setIsLoading(false)
+      }
+    }
+  };
+
+  
   const handelChangeText = (e) => {
     if (e.target.value !== "") {
       setNote(e.target.value);
@@ -244,6 +308,20 @@ const StudentDetail = (props) => {
     }
   }, [student.CV, student.form, student.report, student.statusCheck]);
 
+  const checkFormTime = (time) => {
+    if (
+      student.listTimeForm &&
+      student.listTimeForm.length > 0
+    ) {
+      const check = student.listTimeForm.find(
+        (item) => item.typeNumber === time.typeNumber
+      );
+      if(check){
+        return check;
+      }
+    }
+    return time
+  }
   return (
     <Modal
       className="showModal"
@@ -259,10 +337,13 @@ const StudentDetail = (props) => {
       ) : (
         <div>
           <h4 className="text-center">Thông tin sinh viên</h4>
-          <Row className="col-md-16">
+          <Row className="col-md-16 mt-3">
             <Col
-              span={16}
-              className="border-right ms-4"
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 14 }}
+              span={14}
+              className="border-right"
               style={{ paddingRight: 20 }}
             >
               <Row className="d-flex align-items-center">
@@ -470,7 +551,7 @@ const StudentDetail = (props) => {
                 </Col>
 
                 <Col xs={{ span: 24 }} md={{ span: 12 }} className="d-flex">
-                  <h6>Sinh viên đã được hỗ trợ thực tập: </h6>
+                  <h6>SV đã được hỗ trợ TT: </h6>
                   {studentId.support ? (
                     // eslint-disable-next-line jsx-a11y/anchor-is-valid
                     <a
@@ -498,27 +579,14 @@ const StudentDetail = (props) => {
                     <span className="ms-2">Chưa nộp</span>
                   )}
                 </Col>
-
-                <Col style={{ marginTop: 40 }} span={24}>
-                  <h6>Ghi chú cho sinh viên</h6>
-                </Col>
-                <Col span={24}>
-                  <TextArea
-                    value={noteDetail}
-                    showCount
-                    maxLength={100}
-                    style={{ height: 80, marginBottom: 10 }}
-                    onChange={onChangeTextArea}
-                  />
-                  {isSetNote && (
-                    <Button type="primary" onClick={onUpdateNote}>
-                      Cập nhật ghi chú
-                    </Button>
-                  )}
-                </Col>
               </Row>
             </Col>
-            <Col span={8}>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 10 }}
+              span={10}
+            >
               <div className="detal-form-status">
                 <div
                   className="d-flex justify-content-between align-items-center mb-3"
@@ -635,9 +703,102 @@ const StudentDetail = (props) => {
                     <span></span>
                   )}
                 </div>
+                <div className=" mb-3">
+                  <h6 className="m-0">Thời gian hiển thị form nhập </h6>
+                </div>
+                <div>
+                  <ul className="m-0 p-0 ms-3">
+                    {times &&
+                      times.length > 0 &&
+                      times.map((time) => {
+                        if (time.typeNumber !== 4) {
+                          const studentFormTime = checkFormTime(time)
+                          return (
+                            <li
+                              key={time._id}
+                              className="form-time-text align-items-center"
+                            >
+                              <span className="text-upcatch">
+                                {time.typeName}
+                              </span>{" "}
+                              :{" "}
+                              {timeStudent && timeStudent?.typeNumber === studentFormTime.typeNumber ? (
+                                <div>
+                                  <RangePicker
+                                    onChange={onSetDatePicker}
+                                    showTime
+                                    format={dateFormat}
+                                    defaultValue={[
+                                      moment(
+                                        new Date(studentFormTime.startTime),
+                                        dateFormat
+                                      ),
+                                      moment(
+                                        new Date(studentFormTime.endTime),
+                                        dateFormat
+                                      ),
+                                    ]}
+                                  />
+                                  <div className="my-2">
+                                    <Button
+                                      onClick={() => setTimeStudent({})}
+                                      type="default"
+                                    >
+                                      Huỷ
+                                    </Button>
+                                    <Button
+                                      className="ms-3"
+                                      onClick={onSaveTimeStudent}
+                                      type="primary"
+                                    >
+                                      Đặt thời gian
+                                    </Button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <span>
+                                  <span className="mx-1">Từ</span>{" "}
+                                  {renderTime(studentFormTime.startTime)}
+                                  <span className="mx-1">đến</span>
+                                  {renderTime(studentFormTime.endTime)}
+                                  <span className="ms-2">
+                                    <EditOutlined
+                                      color="blue"
+                                      onClick={() =>
+                                        onSetIsUpdateStudentTime(
+                                          studentFormTime
+                                        )
+                                      }
+                                    />
+                                  </span>
+                                </span>
+                              )}
+                            </li>
+                          );
+                        }
+                      })}
+                  </ul>
+                </div>
               </div>
             </Col>
           </Row>
+          <Col style={{ marginTop: 40 }} span={24}>
+            <h6>Ghi chú cho sinh viên</h6>
+          </Col>
+          <Col span={24}>
+            <TextArea
+              value={noteDetail}
+              showCount
+              maxLength={100}
+              style={{ height: 80, marginBottom: 10 }}
+              onChange={onChangeTextArea}
+            />
+            {isSetNote && (
+              <Button type="primary" onClick={onUpdateNote}>
+                Cập nhật ghi chú
+              </Button>
+            )}
+          </Col>
         </div>
       )}
     </Modal>

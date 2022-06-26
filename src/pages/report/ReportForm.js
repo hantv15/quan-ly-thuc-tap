@@ -180,7 +180,7 @@ const ReportForm = ({ infoUser, studentById }) => {
                 }}
                 scrollToFirstError
               >
-                <Form.Item label="Họ và Tên">
+                <Form.Item  label="Họ và Tên">
                   <p className={styles.text_form_label}>{studentById.name}</p>
                 </Form.Item>
                 <Form.Item label="Mã sinh viên">

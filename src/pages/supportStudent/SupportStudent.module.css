@@ -3,9 +3,57 @@
     width: 50%;
     margin-left: 20px;
 }
+.select {
+    width: 50% ;
+    margin-left: 20px;
+    
+}
+
+
 
 .text_form_label{
     margin-left: 20px;
     margin-bottom: 0;
     font-weight: '400';
+}
+@media screen and (min-width:374px) and (max-width: 668px ) {
+    .form  input {
+        width: 80%;
+        margin-left: 20px;
+    }
+    .form label {
+        font-weight: bold;
+    }
+    .text_form_label{
+        margin-left: 10px;
+        margin-bottom: 0;
+        font-weight: '400';
+    }
+    .button2{
+       text-align: center;
+       justify-content:center;
+       margin-left: 20px;
+    }
+}
+@media screen and (min-width: 669px) {
+    
+    .form label {
+        font-weight: bold;
+    }
+    .button2{
+       text-align: center;
+       justify-content:center;
+       margin-left: 20px;
+    }
+}
+@media screen and (min-width: 992px) {
+    
+    .form label {
+        font-weight: bold;
+    }
+    .button2{
+       text-align: center;
+       justify-content:center;
+       margin-left: 20px;
+    }
 }

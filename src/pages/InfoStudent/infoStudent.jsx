@@ -11,7 +11,7 @@ import { getLocal } from "../../ultis/storage";
 const columns = [
   {
     title: "Mã",
-    dataIndex: "code_request"
+    dataIndex: "code_request",
   },
   {
     title: "Tên doanh nghiệp",
@@ -31,20 +31,15 @@ const columns = [
   },
   {
     title: "Yêu cầu",
-    dataIndex: "request"
+    dataIndex: "request",
   },
   {
     title: "Chi tiết",
-    dataIndex: "description"
+    dataIndex: "description",
   },
-
 ];
-function InfoStudent({
-  studentById,
-  listBusiness: { list, total },
-  loading,
-}) {
-  const infoUser = getLocal()
+function InfoStudent({ studentById, listBusiness: { list, total }, loading }) {
+  const infoUser = getLocal();
   const [page, setPage] = useState({
     page: 1,
     limit: 5,
@@ -67,7 +62,7 @@ function InfoStudent({
   return (
     <div>
       <Row>
-        <Col sm={{ span:24 }} md={{span: 12}} className=" border-end p-3">
+        <Col sm={{ span: 12 }} md={{ span: 24 }} className=" border-end p-3">
           <div>
             <h4>Thông tin đăng ký</h4>
           </div>
@@ -102,7 +97,7 @@ function InfoStudent({
             </p>
           </div>
         </Col>
-        <Col sm={{ span:24 }} md={{span: 12}} className="p-3">
+        <Col sm={{ span: 24 }} md={{ span: 24 }} className="p-3">
           <h4>Thông tin tuyển dụng</h4>
           {time?.startTime <= dateNow && dateNow <= time.endTime ? (
             <div>
@@ -111,8 +106,7 @@ function InfoStudent({
                 rowKey="_id"
                 columns={columns}
                 dataSource={list}
-          scroll={{ x: 'calc(1000px + 50%)' }}
-
+                scroll={{ x: "calc(1000px + 50%)" }}
                 pagination={{
                   pageSize: page.limit,
                   total: total,
@@ -154,10 +148,7 @@ InfoStudent.propTypes = {
 };
 
 export default connect(
-  ({
-    students: { studentById },
-    business: { listBusiness, loading },
-  }) => ({
+  ({ students: { studentById }, business: { listBusiness, loading } }) => ({
     studentById,
     listBusiness,
     loading,

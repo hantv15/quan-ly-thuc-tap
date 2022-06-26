@@ -1,37 +1,46 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Button, Table, message, Space, Form, Input,  Drawer } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createMajor, getListMajor, updateMajor } from '../../features/majorSlice/majorSlice';
+import { Button, Table, message, Space, Form, Input, Drawer } from "antd";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createMajor,
+  getListMajor,
+  updateMajor,
+} from "../../features/majorSlice/majorSlice";
+import { getLocal } from "../../ultis/storage";
 const Major = () => {
   const dispatch = useDispatch();
+  const infoUser = getLocal();
   const [hideForm, setHideForm] = useState(false);
   const [change, setChange] = useState(false);
-  const [text, setText] = useState('Thêm ngành');
+  const [text, setText] = useState("Thêm ngành");
   const [form] = Form.useForm();
   const { listMajor, loading } = useSelector((state) => state.major);
   const columns = [
     {
-      dataIndex: 'id',
+      dataIndex: "id",
       width: 20,
     },
     {
-      title: 'Tên ngành học',
-      dataIndex: 'name',
+      title: "Tên ngành học",
+      dataIndex: "name",
       width: 100,
     },
     {
-      title: 'Mã ngành học',
-      dataIndex: 'majorCode',
+      title: "Mã ngành học",
+      dataIndex: "majorCode",
       width: 100,
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       width: 100,
       render: (text, record) => (
         <Space size="middle">
-          <a style={{ color: 'blue' }} onClick={() => getDataEdit('update', record)}>
+          <a
+            style={{ color: "blue" }}
+            onClick={() => getDataEdit("update", record)}
+          >
             Sửa
           </a>
         </Space>
@@ -44,20 +53,21 @@ const Major = () => {
   const onFinish = async (values) => {
     const data = {
       ...values,
+      campus_id: infoUser.manager.campus_id,
       _id: change._id,
     };
     try {
-      if (text.toLowerCase() === 'update') {
+      if (text.toLowerCase() === "update") {
         dispatch(
           updateMajor({
             ...data,
-          }),
+          })
         );
       } else {
-        dispatch(createMajor(data))
+        dispatch(createMajor(data));
       }
-      setHideForm(false)
-      message.success("Thành công")
+      setHideForm(false);
+      message.success("Thành công");
     } catch (error) {
       const dataErr = error.response.data.message;
       message.error(dataErr);
@@ -65,16 +75,16 @@ const Major = () => {
   };
   // sửa ngành
   const getDataEdit = (key, value) => {
-    setText(key)
+    setText(key);
     switch (key) {
-      case 'update':
+      case "update":
         setHideForm(true);
         setChange(value);
         form.setFieldsValue({
           name: value.name,
           majorCode: value.majorCode,
         });
-        setText('Sửa ngành');
+        setText("Sửa ngành");
         break;
 
       default:
@@ -94,7 +104,7 @@ const Major = () => {
       <div className="status">
         <div className="flex-header">
           <h4>Quản lý ngành học</h4>
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: "flex" }}>
             <Button
               onClick={() => setHideForm(true)}
               variant="warning"
@@ -105,8 +115,13 @@ const Major = () => {
             </Button>
           </div>
         </div>
-        <div className="filter" style={{ marginTop: '20px' }}>
-          <Drawer title={text} placement="left" onClose={onClose} visible={hideForm}>
+        <div className="filter" style={{ marginTop: "20px" }}>
+          <Drawer
+            title={text}
+            placement="left"
+            onClose={onClose}
+            visible={hideForm}
+          >
             <Form form={form} onFinish={onFinish}>
               <Form.Item
                 name="name"
@@ -114,7 +129,7 @@ const Major = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên ngành học!',
+                    message: "Vui lòng nhập tên ngành học!",
                   },
                 ]}
               >
@@ -122,12 +137,12 @@ const Major = () => {
               </Form.Item>
 
               <Form.Item
-                name={'majorCode'}
-                label={'Mã ngành học'}
+                name={"majorCode"}
+                label={"Mã ngành học"}
                 rules={[
                   {
                     required: true,
-                    message: 'Vui lòng nhập mã ngành học!',
+                    message: "Vui lòng nhập mã ngành học!",
                   },
                 ]}
               >
@@ -136,8 +151,8 @@ const Major = () => {
 
               <Button
                 style={{
-                  position: 'absolute',
-                  left: '35%',
+                  position: "absolute",
+                  left: "35%",
                 }}
                 type="primary"
                 htmlType="submit"

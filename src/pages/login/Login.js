@@ -25,7 +25,7 @@ const Login = () => {
       const dataForm = {
         token: googleData.tokenId,
         cumpusId: cumpus,
-        smester_id: data.data._id,
+        smester_id: data.data?._id,
       };
       dispatch(loginGoogle(dataForm))
         .then((res) => {

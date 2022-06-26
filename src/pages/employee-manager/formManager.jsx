@@ -1,5 +1,5 @@
 import { Col, Form, Input, Row, Button, Select } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect,} from "react";
 import { useDispatch } from "react-redux";
 import { fetchManager } from "../../features/managerSlice/managerSlice";
 const { Option } = Select;

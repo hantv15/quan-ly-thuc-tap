@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { Layout, Menu } from "antd";
 import {
   ProfileOutlined,
@@ -11,16 +11,23 @@ import {
 import { NavLink, Outlet } from "react-router-dom";
 import GlobalHeader from "../components/GlobalHeader.js";
 import { Content } from "antd/lib/layout/layout";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./layout.css";
 import SubMenu from "antd/lib/menu/SubMenu";
+import Media from "react-media";
+import { connect } from "react-redux";
+import { updateIsMobile } from "../features/global.js";
 const { Sider } = Layout;
-function LayoutWebsite() {
+function LayoutWebsite({isMobile}) {
   const [state, setState] = useState(false);
   const { infoUser } = useSelector((state) => state.auth);
   const onCollapse = () => {
     setState(!state);
   };
+  const dispatch = useDispatch()
+React.useEffect(() => {
+  dispatch(updateIsMobile({isMobile}))
+},[dispatch, isMobile])
 
   return (
     <div>
@@ -163,5 +170,10 @@ function LayoutWebsite() {
 }
 
 LayoutWebsite.propTypes = {};
-
-export default LayoutWebsite;
+export default connect(({global}) => ({
+  global
+}))(props => (
+  <Media query="(max-width: 768px)">
+    {isMobile => <LayoutWebsite {...props} isMobile={isMobile} />}
+  </Media>
+));

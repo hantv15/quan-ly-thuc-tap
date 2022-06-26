@@ -1,49 +1,78 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Button, Table, message, Space, Form } from "antd";
-import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import SemestersAPI from "../../API/SemestersAPI";
-import { getSemesters } from "../../features/semesters/semestersSlice";
-import FSemester from "./formSemester";
-const FormSemester = () => {
+import { Button, Table, message, Space, Form, Drawer, DatePicker, Input } from 'antd';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { getSemesters, insertSemester, updateSemester } from '../../features/semesters/semestersSlice';
+const { RangePicker } = DatePicker;
+
+const FormSemester = ({
+  isMobile
+}) => {
   const dispatch = useDispatch();
   const [hideForm, setHideForm] = useState(false);
-  const [hideButton, setHideButton] = useState(false);
-  const [text, setText] = useState("Thêm kỳ");
-  const [dataEdit, setDataEdit] = useState({});
+  const [text, setText] = useState('Thêm kỳ');
+  const[change,setChange] = React.useState({})
   const [form] = Form.useForm();
-  const { listSemesters } = useSelector((state) => state.semester);
+  const { listSemesters, loading } = useSelector((state) => state.semester);
+  useEffect(() => {
+    dispatch(getSemesters());
+  }, [dispatch, hideForm]);
 
-  const capitalizeFirstLetter = (value) => {
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  };
+  const columns = [
+    {
+      dataIndex: 'id',
+      width: 20,
+    },
+    {
+      title: 'Tên kỳ',
+      dataIndex: 'name',
+      width: 100,
+      render: val => val.charAt(0).toUpperCase() + val.slice(1)
+    },
+    {
+      title: 'Thời gian bắt đầu',
+      dataIndex: 'start_time',
+      width: 100,
+      render: val => moment(val).format('DD/MM/YYYY')
 
-  const result = listSemesters.map((item) => ({
-    id: item._id,
-    name: capitalizeFirstLetter(item.name),
-    start_time: moment(item.start_time).format("DD/MM/YYYY"),
-    end_time: moment(item.end_time).format("DD/MM/YYYY"),
-  }));
+    },
+    {
+      title: 'Thời gian kết thúc',
+      dataIndex: 'end_time',
+      width: 100,
+      render: val => moment(val).format('DD/MM/YYYY')
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      width: 100,
+      render: (text, record) => (
+        <Space size="middle">
+          <a style={{ color: 'blue' }} onClick={() => getDataEdit("update",record)}>
+            Sửa
+          </a>
+        </Space>
+      ),
+    },
+  ].filter((item) => item.dataIndex !== 'id');
+
 
   const onFinish = async (values) => {
     const data = {
-      id: values.id,
+      id: change._id,
       name: values.name,
       start_time: values.time[0]._d,
       end_time: values.time[1]._d,
     };
     try {
-      if (values.status === 1) {
-        const res = await SemestersAPI.updateSemester(data);
-        if (res) {
-          message.success("Sửa kỳ học thành công");
-        }
+      if (text === "update") {
+    
+        dispatch(updateSemester(data))
+        message.success("Thành công") 
       } else {
-        const res = await SemestersAPI.insertSemester(data);
-        if (res) {
-          message.success("Thêm kỳ học thành công");
-        }
+        dispatch(insertSemester(data))
+        message.success("Thành công")
       }
     } catch (error) {
       const dataErr = error.response.data.message;
@@ -53,101 +82,125 @@ const FormSemester = () => {
   };
 
   // sửa kỳ
-  const getDataEdit = (value) => {
+  const getDataEdit = (key,value) => {
+    setText(key)
     setHideForm(true);
-    form.setFieldsValue({
-      id: value.id,
-      name: value.name,
-      time: [moment(value.start_time), moment(value.end_time)],
-    });
-    setHideButton(true);
-    setText("Sửa kỳ");
+
+    switch (key) {
+      case "update":
+        setChange(value)
+        form.setFieldsValue({
+          id: value.id,
+          name: value.name,
+          time: [moment(value.start_time), moment(value.end_time)],
+        });
+        break;
+        case "add":
+          form.resetFields();
+          break;
+      default:
+        break;
+    }
   };
 
-  // Huỷ form
-  const editStatusButton = (value) => {
-    setHideButton(value);
-    setHideForm(false);
-  };
 
-  // Bật tắt button tạo kỳ
-  const isHideForm = () => {
-    form.resetFields();
-    setHideForm(!hideForm);
-    setText("Thêm kỳ");
-    setDataEdit();
-  };
 
-  useEffect(() => {
-    dispatch(getSemesters());
-  }, [dispatch, hideForm]);
+ 
 
-  const columns = [
-    {
-      dataIndex: "id",
-      width: 20,
-    },
-    {
-      title: "Tên kỳ",
-      dataIndex: "name",
-      width: 100,
-    },
-    {
-      title: "Thời gian bắt đầu",
-      dataIndex: "start_time",
-      width: 100,
-    },
-    {
-      title: "Thời gian kết thúc",
-      dataIndex: "end_time",
-      width: 100,
-    },
-    {
-      title: "Action",
-      key: "action",
-      width: 100,
-      render: (text, record) => (
-        <Space size="middle">
-          <a style={{ color: "blue" }} onClick={() => getDataEdit(record)}>
-            Sửa
-          </a>
-        </Space>
-      ),
-    },
-  ].filter((item) => item.dataIndex !== "id");
+  const onClose = () => {
+    setChange({})
+    form.resetFields()
+    setHideForm(false)
+    
+  }
 
   return (
     <>
       <div className="status">
         <div className="flex-header">
           <h4>Tạo kỳ cho năm học</h4>
-          <div style={{ display: "flex" }}>
-            {hideButton ? null : (
+          <div style={{ display: 'flex' }}>
+
               <Button
-                onClick={() => isHideForm()}
+                onClick={() => getDataEdit("add", null)}
                 variant="warning"
                 style={{ marginRight: 10, height: 36 }}
               >
                 Tạo kỳ học
               </Button>
-            )}
           </div>
         </div>
-        {hideForm ? (
-          <div className="filter" style={{ marginTop: "20px" }}>
-            <FSemester
+        <div className="filter" style={{ marginTop: '20px' }}>
+          {/* <FSemester
               onFinish={onFinish}
               dataEdit={dataEdit}
               editStatusButton={editStatusButton}
               text={text}
               forms={form}
-            />
-          </div>
-        ) : null}
-        <Table dataSource={result} columns={columns} />
+            /> */}
+
+          <Drawer
+            destroyOnClose
+            title={'Tạo Kỳ học'}
+            placement="left"
+            onClose={onClose}
+            visible={hideForm}
+            width={ !isMobile && 600}
+          >
+            <Form form={form} onFinish={onFinish}
+            
+              style={{ padding: '0 10px' }} 
+              >
+              <Form.Item
+                name="name"
+                label="Tên kỳ"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập tên kỳ học!',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="time"
+                label="Thời gian bắt đầu"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập thời gian của kỳ học!',
+                  },
+                ]}
+              >
+                {text.toLowerCase() === "update" ? (
+                  <RangePicker />
+                ) : (
+                  <RangePicker
+                    disabledDate={(current) => {
+                      return (
+                        current &&
+                        new Date(current).getTime() <
+                          new Date(listSemesters[listSemesters.length - 1]?.end_time).getTime()
+                      );
+                    }}
+                  />
+                )}
+              </Form.Item>
+              <Form.Item style={{ marginLeft: '20px' }}>
+                <Button type="primary" htmlType="submit">
+                  Xác Nhận
+                </Button>
+             
+              </Form.Item>
+            </Form>
+          </Drawer>
+        </div>
+        <Table loading={loading} dataSource={listSemesters} columns={columns} />
       </div>
     </>
   );
 };
-
-export default FormSemester;
+export default connect(({global})=> ({
+  isMobile: global.isMobile
+}))(FormSemester);

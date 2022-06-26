@@ -1,0 +1,58 @@
+.typeName{
+    display: flex;
+    justify-content: center;
+    padding-left: 80px;
+    font-weight: bold;
+}
+.typeName::first-letter{
+    text-transform: uppercase;
+   
+}
+.button {
+    margin-left: 10px;
+}
+.col {
+    padding-top: 20px;
+}
+
+
+@media (min-width:739px) and (max-width:1199px) {
+    
+    .RangePicker {
+        margin-left: 80px;
+    }
+    .Table {
+        margin-left: 30px;
+    }
+}
+
+@media (min-width:539px) and (max-width:739px) {
+ .button {
+   margin-left: -50px;
+   
+ }
+ 
+ 
+  
+}
+
+@media (max-width:538px) {
+    
+ 
+
+}
+
+@media (max-width: 414px){
+  
+    .button {
+        margin-left: 0px;
+        margin-top: 10px;
+      
+      }
+      .typeName{
+        padding-left: 0px;
+        justify-content: start;
+     }
+
+
+}

@@ -16,7 +16,7 @@ const SemestersAPI = {
   },
 
   updateSemester(data) {
-    const url = `/update-mester`;
+    const url = `/update-mester/${data.id}`;
     return axiosClient.patch(url, data);
   },
 };

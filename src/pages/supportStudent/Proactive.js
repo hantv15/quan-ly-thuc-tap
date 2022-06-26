@@ -1,10 +1,12 @@
 import React from "react";
 import { Form, Input } from "antd";
+import styles from "./Proactive.module.css";
 const Proactive = () => {
   return (
     <>
       <Form.Item
         name="unit"
+        className={styles.form.input}
         label="Đơn vị thực tập"
         rules={[
           {

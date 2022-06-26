@@ -1,0 +1,17 @@
+.header_flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(214, 214, 214);
+    padding: 10px 0;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.header_flex>h4 {
+    border-bottom: 1px solid rgb(214, 214, 214);
+    padding: 10px 0;
+}
+.status{
+    width: 100%;
+}
